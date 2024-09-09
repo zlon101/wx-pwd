@@ -1,0 +1,66 @@
+/* pages/home.wxss */
+page {
+  box-sizing: border-box;
+  height: 100vh;
+  padding-top: env(safe-area-inset-top);
+}
+.home-wrap {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 4px 20px;
+  color: black;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
+}
+.input-label {
+  font-size: 12px;
+}
+.input-input {
+  border: 1px solid blue;
+  border-radius: 4px;
+  height: 30px;
+  flex: 1;
+  padding-left: 4px;
+}
+
+.tab-bar {
+  margin: 10px 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 60rpx;
+}
+.tab-item {
+  padding: 4px 40rpx;
+}
+.tab-item.active {
+  background-color: aqua;
+}
+
+.scrollarea {
+  flex: 1;
+  overflow-y: hidden;
+}
+.text-box {
+  padding: 20rpx;
+  line-height: 1.5;
+  border-bottom: 1px solid #333;
+}
+.text-box:not(:first-child) {
+  padding-top: 50rpx;
+}
+
+.footer {
+  text-align: center;
+}

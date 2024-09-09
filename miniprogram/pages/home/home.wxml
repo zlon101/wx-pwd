@@ -1,0 +1,27 @@
+<!--pages/home.wxml-->
+
+<view class="home-wrap">
+  <view class="input-wrapper">
+    <input
+      class="input-input"
+      type="text"
+      value="{{inputVal}}"
+      password="{{!isSearch}}"
+      confirm-type="{{isSearch ? 'search' : 'done'}}"
+      placeholder="请输入..."
+      bindconfirm="onInputConfirm"
+      bindinput="onInputChange"
+    />
+  </view>
+
+  <view class="tab-bar">
+    <view class="tab-item {{curTab === item.value ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="item.value" data-path="{{item.value}}" bindtap="onTabClick">{{item.label}}</view>
+  </view>
+
+  <scroll-view class="scrollarea" scroll-y type="list">
+    <view class="text-box" wx:for="{{tabContent}}" data-ps="{{item.v}}">
+      <text user-select wx:for="{{item}}" wx:for-index="k" wx:for-item="v">{{k}}：{{v}}</text>
+    </view>
+    <view class="footer">-------------</view>
+  </scroll-view>
+</view>
