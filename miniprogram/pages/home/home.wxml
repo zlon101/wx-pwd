@@ -6,22 +6,44 @@
       class="input-input"
       type="text"
       value="{{inputVal}}"
-      password="{{!isSearch}}"
-      confirm-type="{{isSearch ? 'search' : 'done'}}"
+      password="{{!hasDecrypt}}"
+      confirm-type="{{hasDecrypt ? 'search' : 'done'}}"
       placeholder="请输入..."
       bindconfirm="onInputConfirm"
       bindinput="onInputChange"
     />
+    <view wx:if="{{isEdit}}" class="cancel-btn" bind:tap="onEditCancel">取消</view>
+    <view class="edit-btn" bind:tap="onStartEdit">{{isEdit ? "提交" : "编辑"}}</view>
   </view>
 
   <view class="tab-bar">
-    <view class="tab-item {{curTab === item.value ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="item.value" data-path="{{item.value}}" bindtap="onTabClick">{{item.label}}</view>
+    <view
+      class="tab-item {{curTab === item.value ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="item.value"
+      data-path="{{item.value}}"
+      bindtap="onTabClick"
+    >{{item.label}}</view>
   </view>
 
   <scroll-view class="scrollarea" scroll-y type="list">
-    <view class="text-box" wx:for="{{tabContent}}" data-ps="{{item.v}}">
-      <text user-select wx:for="{{item}}" wx:for-index="k" wx:for-item="v">{{k}}：{{v}}</text>
+    <textarea auto-height
+      class="editarea"
+      maxlength="-1"
+      model:value="{{textareaVal}}"
+      wx:if="{{isEdit}}"
+      confirm-type="return"
+      confirm-hold="true"
+    ></textarea>
+    <view wx:else>
+      <view
+        class="text-box"
+        wx:for="{{tabContent}}"
+      >
+        <text user-select>{{item}}</text>
+      </view>
     </view>
+    
     <view class="footer">-------------</view>
   </scroll-view>
 </view>

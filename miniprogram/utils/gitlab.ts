@@ -29,10 +29,11 @@ export const ProjectCfg: IProjectConfig = {
   token: '',
 };
 
-export async function fetch(url: string, param: any = {}) {
+export function fetch(url: string, param: any = {}) {
   return new Promise((resolve, reject) => {
     wx.request({
       url,
+      method: param.method,
       data: param.body,
       header: param.headers,
       dataType: param.dataType || 'json',
@@ -110,6 +111,59 @@ export async function downFile(projectCfg: CustomRequired<IProjectConfig, 'path'
   }
 }
 
+// 更新文件
+export async function updateFile(content: any, commit_message: string, proConf: CustomRequired<IProjectConfig, 'path'>) {
+  const _proConf = {...ProjectCfg, ...proConf};
+  const filePath = encodeURIComponent(_proConf.path);
+  const param = {
+    private_token: _proConf.token,
+    ref: _proConf.branch,
+  };
+  let contentType = 'text/plain';
+  if ([undefined, null].includes(content)) {
+    content = '';
+  } else if (typeof content === 'object') {
+    contentType= 'application/json';
+    try {
+      content = JSON.stringify(content, null, 2);
+    } catch (e) {
+      throw new Error('updateFile(content) 中的 content 无法json序列化');
+    }
+  }
+  const body = JSON.stringify({
+    branch: param.ref,
+    commit_message,
+    content,
+    file_path: filePath,
+    id: _proConf.id,
+  });
+  const url = `${_proConf.baseURL}/projects/${_proConf.id}/repository/files/${filePath}?${transformQuery(param)}`;
+
+  return fetch(url, {
+    method: 'PUT',
+    // @ts-ignore
+    headers: {
+      'PRIVATE-TOKEN': _proConf.token,
+      'Content-Type': 'application/json',
+    },
+    body,
+  });
+}
+
+// 删除文件
+export async function delFiles(files: string | string[], commitMsg: string, proConf: Partial<IProjectConfig>) {
+  if (!files || !files?.length) {return;}
+  if (!Array.isArray(files)) {
+    files = [files];
+  }
+  const actions: IAction[] = files.map(s => ({
+    file_path: s,
+    action: 'delete',
+  }));
+  return createCommit(actions, commitMsg, proConf);
+}
+
+
 /**
  * 获取单个 raw 文件
  * https://gitlab.com/api/v4/projects/52878930/repository/files/images%2FWechatIMG29.jpg/raw?private_token=xxx&ref=main
@@ -174,55 +228,6 @@ export async function uploadLocalFiles(files: IFile[], commitMsg: string, projec
   await createCommit(actions, commitMsg, projectConf);
 }
 
-// 更新文件
-export async function updateFile(content: any, commit_message: string, proConf: CustomRequired<IProjectConfig, 'path'>) {
-  const _proConf = {...ProjectCfg, ...proConf};
-  const filePath = encodeURIComponent(_proConf.path);
-  const param = {
-    private_token: _proConf.token,
-    ref: _proConf.branch,
-  };
-  if ([undefined, null].includes(content)) {
-    content = '';
-  } else if (typeof content === 'object') {
-    try {
-      content = JSON.stringify(content, null, 2);
-    } catch (e) {
-      throw new Error('updateFile(content) 中的 content 无法json序列化');
-    }
-  }
-  const body = JSON.stringify({
-    branch: param.ref,
-    commit_message,
-    content,
-    file_path: filePath,
-    id: _proConf.id,
-  });
-  const url = `${_proConf.baseURL}/projects/${_proConf.id}/repository/files/${filePath}?${transformQuery(param)}`;
-  return await fetch(url, {
-    method: 'PUT',
-    // @ts-ignore
-    headers: {
-      'PRIVATE-TOKEN': _proConf.token,
-      'Content-Type': 'application/json',
-    },
-    body,
-  });
-}
-
-// 删除文件
-export async function delFiles(files: string | string[], commitMsg: string, proConf: Partial<IProjectConfig>) {
-  if (!files || !files?.length) {return;}
-  if (!Array.isArray(files)) {
-    files = [files];
-  }
-  const actions: IAction[] = files.map(s => ({
-    file_path: s,
-    action: 'delete',
-  }));
-  return createCommit(actions, commitMsg, proConf);
-}
-
 function transformQuery(val: string | object): string | object {
   if (typeof val === 'string') {
     val = decodeURIComponent(val);
@@ -231,7 +236,7 @@ function transformQuery(val: string | object): string | object {
       v = Number.isNaN(Number(v)) ? v : Number(v);
       acc[k] = v;
       return acc;
-    }, {});
+    }, {} as any);
   }
   if (typeof val === 'object') {
     return Object.getOwnPropertyNames(val)
