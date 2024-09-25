@@ -26,6 +26,6 @@
   ],
   "exclude": [
     "node_modules",
-    "utils/crypto-js/*.js"
+    "utils/crypto-js"
   ]
 }
