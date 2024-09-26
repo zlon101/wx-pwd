@@ -1,5 +1,3 @@
-<!--pages/home.wxml-->
-
 <view class="home-wrap">
   <view class="input-wrapper">
     <input
@@ -37,22 +35,19 @@
     >{{item.label}}</view>
   </view>
 
-  <scroll-view class="scrollarea" scroll-y type="list">
-    <textarea auto-height
-      class="editarea"
-      maxlength="-1"
-      model:value="{{textareaVal}}"
-      wx:if="{{isEdit}}"
-      confirm-type="return"
-      confirm-hold="true"
-    ></textarea>
-    <view wx:else>
-      <view
-        class="text-box"
-        wx:for="{{tabContent}}"
-      >
-        <text user-select>{{item}}</text>
-      </view>
+  <textarea
+    wx:if="{{isEdit}}"
+    class="editarea"
+    style="bottom:{{bottom}}px"
+    cursor="0"
+    maxlength="-1"
+    model:value="{{textareaVal}}"
+    confirm-type="return"
+    confirm-hold="true"
+  ></textarea>
+  <scroll-view wx:else class="scrollarea" scroll-y type="list">
+    <view class="text-box" wx:for="{{tabContent}}">
+      <text user-select>{{item}}</text>
     </view>
     <view class="footer">-------------</view>
   </scroll-view>

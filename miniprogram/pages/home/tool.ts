@@ -51,9 +51,9 @@ export const gitlabManaget = (function () {
         wx.hideLoading();
       }
     },
-    async updateContent(filePath: string, content: string) {
+    async updateContent(filePath: string, content: string, commitMsg: string) {
       wx.showLoading({ title: '加载中...' });
-      const commitMsg = `从 wx 更新 ${filePath}`;
+      // const commitMsg = `从 wx 更新 ${filePath}`;
       try {
         const encodedStr: string = encrypt(content, conf.contentPs);
         await updateFile(encodedStr, commitMsg, {...conf, path: filePath});
@@ -89,3 +89,11 @@ export const randomString = (len: number, cfg = {onlyNumber: false, speical: tru
   }
   return randomStr;
 };
+
+export function toast(msg: string | number) {
+  wx.showToast({
+    title: `${msg}`,
+    icon: 'success',
+    duration: 2000,
+  });
+}

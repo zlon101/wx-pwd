@@ -38,6 +38,7 @@ Page<IPageData, any>({
     isEdit: false,
     specialChat: true,
     onlyNum: false,
+    bottom: 45,
     textareaVal: "",
     randomVal: '',
   },
@@ -45,9 +46,15 @@ Page<IPageData, any>({
     fileContentMap: new Map(),
   },
   onLoad() {
-    const e: any = {};
-    e.detail = {value: '1108 1109'};
-    this.onInputConfirm(e);
+    // const e: any = {};
+    // e.detail = {value: ''};
+    // this.onInputConfirm(e);
+    // 键盘高度变化
+    wx.onKeyboardHeightChange(res => {
+      const h = res.height || 0;
+      this.setData({bottom: 45+h});
+    });
+    console.log('\n\nonLoadin');
   },
   async onTabClick(e: any) {
     const _path = typeof e === 'string' ? e : e.currentTarget.dataset.path;
@@ -115,19 +122,34 @@ Page<IPageData, any>({
       inputVal: '',
     };
     if (newTxt !== psArr1.join(Sep)) {
-      gitlabManaget.updateContent(nowPath, newTxt).then(() => {
-        this.customData.fileContentMap.set(nowPath, newArr);
-        this.setData(nData, () => this.onTabClick(nowPath));
+      const uploadCb = (commitMsg: string) => {
+        gitlabManaget.updateContent(nowPath, newTxt, commitMsg).then(() => {
+          this.customData.fileContentMap.set(nowPath, newArr);
+          this.setData(nData, () => this.onTabClick(nowPath));
+        });
+      };
+      wx.showModal({
+        title: '',
+        content: '',
+        editable: true,
+        placeholderText: 'commit 信息',
+        success (res) {
+          if (res.confirm) {
+            uploadCb(res.content);
+          }
+        }
       });
     } else {
-      this.setData(nData);
+      this.setData(nData, () => this.onTabClick(nowPath));
     }
   },
   onEditCancel() {
     this.setData({
       isEdit: false,
       textareaVal: '',
-    });
+      inputPlace: '搜索',
+      inputVal: '',
+    }, () => this.onTabClick(this.data.curTab));
   },
   // 提交输入的密码
   onInputConfirm(e: any) {
