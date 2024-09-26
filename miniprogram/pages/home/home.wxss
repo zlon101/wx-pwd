@@ -5,35 +5,52 @@ page {
   padding-top: env(safe-area-inset-top);
 }
 .home-wrap {
-  box-sizing: border-box;
   height: 100%;
+  padding: 24px 4px 20px;
   display: flex;
   flex-direction: column;
-  padding: 24px 4px 20px;
   color: black;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .input-wrapper {
   display: flex;
   width: 100%;
-  padding: 16px 4px 0;
+  padding: 20px 4px 0;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-}
-.input-label {
-  font-size: 12px;
 }
 .input-input {
   border: 1px solid #bec8c8;
   border-radius: 4px;
   height: 30px;
-  flex: 1;
+  flex: 1 1 auto;
   padding-left: 4px;
 }
-.edit-btn,
-.cancel-btn {
+
+.check-btn {
+  display: flex;
+  align-items: center;
+}
+.r-btn {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: fixed;
+  bottom: 20px;
+  right: 16px;
+}
+.checkbox {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 10px;
+  margin: 0 8px;
+}
+.btn {
   box-sizing: border-box;
   line-height: 30px;
   vertical-align: middle;
@@ -48,10 +65,22 @@ page {
   border: 1px solid transparent;
 }
 .cancel-btn {
-  margin-left: 4px;
+  margin: 0 16px;
   background-color: #fff;
-  color: black;
+  color: #333;
   border: 1px solid #bec8c8;
+}
+.random-btn {
+  background-color: #fff;
+  color: rgb(22, 119, 255);
+  border: 1px solid rgb(22, 119, 255);
+}
+.random-preview {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 16px);
+  left: 16px;
+  color: blue;
+  font-size: 14px;
 }
 
 .tab-bar {
@@ -70,6 +99,7 @@ page {
 .tab-item.active {
   background-color: aqua;
 }
+
 
 .scrollarea {
   flex: 1;

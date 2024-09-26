@@ -8,12 +8,23 @@
       value="{{inputVal}}"
       password="{{!hasDecrypt}}"
       confirm-type="{{hasDecrypt ? 'search' : 'done'}}"
-      placeholder="请输入..."
+      placeholder="{{inputPlace}}"
       bindconfirm="onInputConfirm"
       bindinput="onInputChange"
     />
-    <view wx:if="{{isEdit}}" class="cancel-btn" bind:tap="onEditCancel">取消</view>
-    <view class="edit-btn" bind:tap="onStartEdit">{{isEdit ? "提交" : "编辑"}}</view>
+    <view wx:if="{{isEdit}}" class="check-btn">
+      <label class="checkbox">
+        <checkbox checked="{{specialChat}}" bind:tap="onSwitchSpecialChat" />
+        <text>特殊字符</text>
+      </label>
+      <label class="checkbox">
+        <checkbox checked="{{onlyNum}}" bind:tap="onSwitchOnlyNum" />
+        <text>仅数字</text>
+      </label>
+      <view class="btn random-btn" bind:tap="onRandom">生成</view>
+      <!-- <view class="checkbox-wrap"></view> -->
+    </view>
+    <view wx:else class="btn edit-btn" bind:tap="onStartEdit">编辑</view>
   </view>
 
   <view class="tab-bar">
@@ -43,7 +54,12 @@
         <text user-select>{{item}}</text>
       </view>
     </view>
-    
     <view class="footer">-------------</view>
   </scroll-view>
+
+  <view wx:if="{{isEdit}}" class="r-btn">
+    <view class="btn cancel-btn" bind:tap="onEditCancel">取消</view>
+    <view class="btn edit-btn" bind:tap="onStartEdit">提交</view>
+  </view>
+  <text wx:if="{{isEdit}}" class="random-preview" user-select>{{randomVal}}</text>
 </view>

@@ -1,5 +1,4 @@
-import { log } from '../../utils/log';
-import {gitlabManaget, IPsItem} from './tool';
+import {gitlabManaget, IPsItem, randomString} from './tool';
 
 interface IPageData {
   hasDecrypt: boolean;
@@ -31,19 +30,24 @@ Page<IPageData, any>({
   data: {
     hasDecrypt: false,
     inputVal: '',
+    inputPlace: '请输入...',
     tabs: [],
     curTab: '',
     tabContent: [],
+    // 编辑
     isEdit: false,
+    specialChat: true,
+    onlyNum: false,
     textareaVal: "",
+    randomVal: '',
   },
   customData: {
     fileContentMap: new Map(),
   },
   onLoad() {
-    // const e: any = {};
-    // e.detail = {value: '1108 1109'};
-    // this.onInputConfirm(e);
+    const e: any = {};
+    e.detail = {value: '1108 1109'};
+    this.onInputConfirm(e);
   },
   async onTabClick(e: any) {
     const _path = typeof e === 'string' ? e : e.currentTarget.dataset.path;
@@ -96,29 +100,27 @@ Page<IPageData, any>({
       this.setData({
         isEdit: true,
         textareaVal: formatArray.array2Str(psArr1),
+        inputPlace: '字符长度',
+        inputVal: 12,
       });
       return;
     }
     // 结束编辑
     const newArr = formatArray.str2Array(this.data.textareaVal);
     const newTxt = newArr.join(Sep);
+    const nData: any = {
+      isEdit: false,
+      textareaVal: '',
+      inputPlace: '搜索',
+      inputVal: '',
+    };
     if (newTxt !== psArr1.join(Sep)) {
       gitlabManaget.updateContent(nowPath, newTxt).then(() => {
         this.customData.fileContentMap.set(nowPath, newArr);
-        this.setData({
-          isEdit: false,
-          textareaVal: '',
-        },
-        () => {
-          log('setData 回调', this.data.isEdit);
-          this.onTabClick(nowPath);
-        });
+        this.setData(nData, () => this.onTabClick(nowPath));
       });
     } else {
-      this.setData({
-        isEdit: false,
-        textareaVal: '',
-      });
+      this.setData(nData);
     }
   },
   onEditCancel() {
@@ -143,7 +145,25 @@ Page<IPageData, any>({
         curTab: _tabs[0].value,
         hasDecrypt: true,
         inputVal: '',
+        inputPlace: '搜索',
       });
     });
+  },
+  // 是否选中特殊字符
+  onSwitchSpecialChat() {
+    this.setData({specialChat: !this.data.specialChat});
+  },
+  onSwitchOnlyNum() {
+    this.setData({onlyNum: !this.data.onlyNum});
+  },
+  // 生成随机数
+  onRandom() {
+    const _d = this.data;
+    const l = parseInt(_d.inputVal);
+    if (Number.isNaN(l)) return;
+    const cfg = {onlyNumber: _d.onlyNum, speical: _d.specialChat};
+    const res = randomString(l, cfg);
+    this.setData({randomVal: res});
+    // wx.setClipboardData({ data: res });
   },
 })
