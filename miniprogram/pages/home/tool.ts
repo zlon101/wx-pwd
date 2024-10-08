@@ -81,7 +81,8 @@ export const randomString = (len: number, cfg = {onlyNumber: false, speical: tru
   const Alphabet = 'ABCDEFGHJKLMNPQRSTVWXYZabcdefghijkmnpqrstuvwxyz';
   const Nums = '1234567890';
   const Speic = '!@#$%^&_?<>';
-  const sets = cfg.onlyNumber ? Nums : (cfg.speical ? Alphabet.concat(Nums, Speic) : Alphabet.concat(Nums));
+  let sets: string = cfg.onlyNumber ? Nums : (cfg.speical ? Alphabet.concat(Nums, Speic) : Alphabet.concat(Nums));
+  sets = confused<string>(Array.from(sets)).join('');
   const strLen = sets.length;
   let randomStr = '';
   for (let i = 0; i < len; i++) {
@@ -89,11 +90,34 @@ export const randomString = (len: number, cfg = {onlyNumber: false, speical: tru
   }
   return randomStr;
 };
+// 洗牌算法
+function confused<T>(arr1: T[]): T[] {
+  const N = (arr1 || []).length;
+  if (N < 2) {
+    return arr1;
+  }
+  const shuffle = (arr: T[]) => {
+    let n = arr.length;
+    let random = -1;
+    while (0 !== n) {
+      // 无符号右移位运算符向下取整，或者改写成 random = Math.floor(Math.random() * n--)
+      random = (Math.random() * n--) >>> 0;
+      [arr[n], arr[random]] = [arr[random], arr[n]];
+    }
+    return arr;
+  };
+  return shuffle([...arr1]);
+}
 
-export function toast(msg: string | number) {
+interface IToast {
+  icon?: 'success' | 'error' | 'none';
+  duration?: number;
+}
+export function toast(msg: string | number, cfg: IToast = {}) {
   wx.showToast({
     title: `${msg}`,
     icon: 'success',
     duration: 2000,
+    ...cfg,
   });
 }

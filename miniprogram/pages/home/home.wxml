@@ -1,3 +1,14 @@
+<!-- 
+<block wx:elif="{{!hasUserInfo}}">
+  <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
+  <view wx:else> 请使用2.10.4及以上版本基础库 </view>
+</block>
+<block wx:elif="{{!hasUserInfo}}">
+  <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
+  <view wx:else> 请使用2.10.4及以上版本基础库 </view>
+</block>
+-->
+
 <view class="home-wrap">
   <view class="input-wrapper">
     <input
@@ -20,7 +31,6 @@
         <text>仅数字</text>
       </label>
       <view class="btn random-btn" bind:tap="onRandom">生成</view>
-      <!-- <view class="checkbox-wrap"></view> -->
     </view>
     <view wx:else class="btn edit-btn" bind:tap="onStartEdit">编辑</view>
   </view>
@@ -52,9 +62,11 @@
     <view class="footer">-------------</view>
   </scroll-view>
 
-  <view wx:if="{{isEdit}}" class="r-btn">
-    <view class="btn cancel-btn" bind:tap="onEditCancel">取消</view>
-    <view class="btn edit-btn" bind:tap="onStartEdit">提交</view>
-  </view>
-  <text wx:if="{{isEdit}}" class="random-preview" user-select>{{randomVal}}</text>
+  <block wx:if="{{isEdit}}">
+    <view class="r-btn">
+      <view class="btn cancel-btn" bind:tap="onEditCancel">取消</view>
+      <view class="btn edit-btn" bind:tap="onStartEdit">提交</view>
+    </view>
+    <text class="random-preview" user-select>{{randomVal}}</text>
+  </block>
 </view>
